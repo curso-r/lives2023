@@ -3,3 +3,6 @@
 .Rdata
 .httr-oauth
 .DS_Store
+2023-09-06/data-raw
+2023-09-06/tab_download.rds
+2023-09-06/glossario_de_aerodromo.xls
