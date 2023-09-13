@@ -25,6 +25,8 @@ jogos_brasil <- jogos_copa_23 |>
 
 dados_jogos_brasil <- StatsBombR::free_allevents(jogos_brasil)
 
+dados_jogos_brasil |> dplyr::glimpse()
+
 # Ações em um jogo --------------------------------------------------------
 
 dados_jogos_brasil |>
@@ -34,6 +36,20 @@ dados_jogos_brasil |>
 brasil_panama <- dados_jogos_brasil |>
   dplyr::filter(match_id == 3893801)
 
+brasil_panama$position.name |> unique()
+
+brasil_panama |>
+  dplyr::as_tibble() |>
+  dplyr::distinct(player.name, position.name) |>
+  dplyr::count(player.name, sort = TRUE)
+
+brasil_panama |>
+    dplyr::filter(player.name == "Carina Alicia Baltrip-Reyes") |>
+    dplyr::select(timestamp, player.name, position.name) |>
+    dplyr::arrange(timestamp)
+
+  dplyr::count(player.name, position.name, sort = TRUE)
+
 # Quantaas ações de cada tipo aconteceram no jogo
 brasil_panama |>
   dplyr::count(type.name) |>
@@ -41,21 +57,33 @@ brasil_panama |>
 
 # Visualizar a quantidade de ações por time
 brasil_panama |>
-  dplyr::filter(type.name %in% c("Pass", "Carry", "Pressure",
-                                 "Duel", "Dribble", "Clearance",
-                                 "Shot", "Block", "Interception", "Foul Won")) |>
-  dplyr::mutate(team_period = stringr::str_c(team.name, " ", period, " tempo")) |>
-  dplyr::count(type.name, team_period) |>
-  dplyr::arrange(dplyr::desc(n)) |>
+  dplyr::filter(
+    type.name %in% c("Pass", "Carry", "Pressure",
+                     "Duel", "Dribble", "Clearance",
+                     "Shot", "Block", "Interception", "Foul Won")
+  ) |>
+  dplyr::select(team.name, period, type.name) |>
+  dplyr::count(team.name, period, type.name) |>
   ggplot2::ggplot() +
-  ggplot2::aes(x = type.name, y = n, fill = type.name) +
-  ggplot2::geom_col() +
-  ggplot2::scale_fill_viridis_d() +
-  ggplot2::facet_wrap(~ team_period) +
-  ggplot2::theme_minimal() +
-  ggplot2::theme(
-    axis.text.x = ggplot2::element_text(angle = 60, vjust = 0.5),
-  )
+  ggplot2::geom_col(
+    ggplot2::aes(y = type.name, x = n, fill = team.name),
+    position = "dodge"
+  ) +
+  ggplot2::facet_wrap(~period)
+
+
+  # dplyr::mutate(team_period = stringr::str_c(team.name, " ", period, " tempo")) |>
+  # dplyr::count(type.name, team_period) |>
+  # dplyr::arrange(dplyr::desc(n)) |>
+  # ggplot2::ggplot() +
+  # ggplot2::aes(x = type.name, y = n, fill = type.name) +
+  # ggplot2::geom_col() +
+  # ggplot2::scale_fill_viridis_d() +
+  # ggplot2::facet_wrap(~ team_period) +
+  # ggplot2::theme_minimal() +
+  # ggplot2::theme(
+  #   axis.text.x = ggplot2::element_text(angle = 60, vjust = 0.5),
+  # )
 
 # Action map --------------------------------------------------------------
 
