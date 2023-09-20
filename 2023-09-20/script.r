@@ -217,3 +217,7 @@ fazer_grafico <- function(dados, time) {
       )
     )
 }
+
+fazer_grafico(dados, "Coritiba")
+
+brasileirao::teams
